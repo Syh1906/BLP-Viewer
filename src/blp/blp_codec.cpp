@@ -422,6 +422,7 @@ bool encode_jpeg_blp1(const uint8_t* rgba, uint32_t width, uint32_t height,
     std::vector<uint8_t> bgra;
 
     bool ok = true;
+    bool hasAlpha = false;
     for (int level = 0; level < levels && ok; ++level) {
         const uint32_t mipW     = std::max(1u, width  >> level);
         const uint32_t mipH     = std::max(1u, height >> level);
@@ -455,6 +456,7 @@ bool encode_jpeg_blp1(const uint8_t* rgba, uint32_t width, uint32_t height,
             bgra[i * 4 + 1] = src[i * 4 + 1]; // G
             bgra[i * 4 + 2] = src[i * 4 + 0]; // R
             bgra[i * 4 + 3] = src[i * 4 + 3]; // A
+            if (level == 0 && src[i * 4 + 3] != 255) hasAlpha = true;
         }
 
         TjBuffer jpegBuf;
@@ -479,7 +481,7 @@ bool encode_jpeg_blp1(const uint8_t* rgba, uint32_t width, uint32_t height,
 
     write_u32(outBlp,  0, MAGIC_BLP1);
     write_u32(outBlp,  4, COMPRESSION_JPEG);
-    write_u32(outBlp,  8, 8);  // alphaBits
+    write_u32(outBlp,  8, hasAlpha ? 8u : 0u); // alphaBits
     write_u32(outBlp, 12, width);
     write_u32(outBlp, 16, height);
     write_u32(outBlp, 20, 4);  // extra (matches original Blizzard files)

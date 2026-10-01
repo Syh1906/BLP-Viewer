@@ -149,3 +149,7 @@ Dear ImGui + Direct3D 11 前端，内置 C++ BLP1 编解码器。
 ## 许可证
 
 MIT
+
+## 独立编码库
+
+无需 GUI 的工具可单独构建 [BLP1 JPEG C ABI 编码组件](encoder/README.md)，直接从 RGBA 像素取得 BLP 字节；构建、内存所有权和第三方许可见该文档。
